@@ -30,7 +30,7 @@ echo $SLURM_ARRAY_TASK_ID
 i=$SLURM_ARRAY_TASK_ID
 ls -alht ${out_dir}/pruned_chr${i}*
 
-ls ${out_dir}/*prune.pgen | grep -o '^.*\prune' > ${out_dir}/chrs_to_merge.txt
+ls ${out_dir}/pruned_chr*.pgen | grep -o '^.*\prune' > ${out_dir}/chrs_to_merge.txt
 
 $plink2 --pmerge-list ${out_dir}/chrs_to_merge.txt pfile --memory 24000 --threads 2  \
 --make-pgen --out ${out_dir}/all_chr_merged
