@@ -27,6 +27,6 @@ mkdir -p $out_dir
 
 echo $SLURM_ARRAY_TASK_ID
 i=$SLURM_ARRAY_TASK_ID
-ls -alht ${out_dir}/qc3_chr${i}_snpfilt*
+ls -alht ${out_dir}/snpfilt_chr${i}*
 
-plink2 --pfile ${out_dir}/qc3_chr${i}_snpfilt --memory 40000 --threads 2 --pca --out ${out_dir}/qc_chr${i}_pca
+plink2 --pfile ${out_dir}/snpfilt_chr${i} --memory 40000 --threads 2 --pca --out ${out_dir}/pca_chr${i}

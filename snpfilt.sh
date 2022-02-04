@@ -4,7 +4,7 @@
 #SBATCH --job-name=gwas_snpfilt
 #SBATCH --time=02:00:00
 #SBATCH --mem=24G
-#SBATCH --ntasks=1
+#SBATCH --ntasks=2
 #SBATCH --cpus-per-task=8
 #SBATCH --verbose
 #SBATCH --output=/scratch/users/k2142172/tests/array/gwas_snpfilt_%A_%a.out
@@ -27,7 +27,7 @@ mkdir -p $out_dir
 
 echo $SLURM_ARRAY_TASK_ID
 i=$SLURM_ARRAY_TASK_ID
-ls -alht ${out_dir}/qc2_chr${i}_prune*
+ls -alht ${out_dir}/pruned_chr${i}*
 
-plink2 --pfile ${out_dir}/qc2_chr${i}_prune --memory 24000 --threads 1  \
---maf 0.01 --geno 0.1 --hwe 1e-8 --make-pgen --out ${out_dir}/qc3_chr${i}_snpfilt
+plink2 --pfile ${out_dir}/pruned_chr${i} --memory 24000 --threads 2  \
+--maf 0.01 --geno 0.1 --hwe 1e-8 --make-pgen --out ${out_dir}/snpfilt_chr${i}
