@@ -28,27 +28,27 @@ conda activate $env
 
 echo $SLURM_ARRAY_TASK_ID
 i=$SLURM_ARRAY_TASK_ID
-ls -alht ${out_dir}/snp_filt_chr${i}*
+ls -alht ${out_dir}/snpfilt_chr${i}*
 
 
 # assign first ID column of final fam file as new .sample file for SAIGE input
-awk '{print $1}' ${out_dir}/snp_filt_chr${i}.fam > ${out_dir}/snp_filt_chr${i}.sample
-wait
+#awk '{print $1}' ${out_dir}/snpfilt_chr${i}.fam > ${out_dir}/snpfilt_chr${i}.sample
+#wait
 
 # submit R script which merges res_distensibility phenotype with PCA PC values as one phenotype file
-Rscript ${base_dir}/scripts/guys_projects/cardiac_gwas/make_pheno.R ${i}
-wait
+#Rscript ${base_dir}/scripts/guys_projects/cardiac_gwas/make_pheno.R ${i}
+#wait
 
 # compress the VCF file version of final data files
-$bgzip -c ${out_dir}/snp_filt_chr${i}.vcf > ${out_dir}/snp_filt_chr${i}.vcf.gz
+$bgzip -c ${out_dir}/snpfilt_chr${i}.vcf > ${out_dir}/snpfilt_chr${i}.vcf.gz
 wait
 
 # index created compressed VCF file
-$bcftools index ${out_dir}/snp_filt_chr${i}.vcf.gz
+$bcftools index ${out_dir}/snpfilt_chr${i}.vcf.gz
 wait
 
 # SAIGE requires FORMAT to contain dosage DS info only, no genotypes GT
 # so remove GT info and re-index
-$bcftools annotate -x FORMAT/GT ${out_dir}/snp_filt_chr${i}.vcf.gz -O z -o ${out_dir}/snp_filt_ds_chr${i}.vcf.gz
-$bcftools index ${out_dir}/snp_filt_ds_chr${i}.vcf.gz
+$bcftools annotate -x FORMAT/GT ${out_dir}/snpfilt_chr${i}.vcf.gz -O z -o ${out_dir}/snpfilt_ds_chr${i}.vcf.gz
+$bcftools index ${out_dir}/snpfilt_ds_chr${i}.vcf.gz
 

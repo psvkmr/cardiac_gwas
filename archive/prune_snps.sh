@@ -28,14 +28,10 @@ mkdir -p $out_dir
 
 echo $SLURM_ARRAY_TASK_ID
 i=$SLURM_ARRAY_TASK_ID
-ls -alht ${out_dir}/snp_filt_chr${i}*
+ls -alht ${out_dir}/sample_filt_chr${i}*
 
 
-plink2 --pfile ${out_dir}/snp_filt_chr${i} --memory 24000 --threads 2 \
- --indep-pairwise 50 5 0.2 --out ${out_dir}/LDprune_chr${i} 
+plink2 --pfile ${out_dir}/sample_filt_chr${i} --memory 24000 --threads 2 --indep-pairwise 50 5 0.2 --out ${out_dir}/LDprune_chr${i} 
 wait
-plink2 --pfile ${out_dir}/snp_filt_chr${i} --memory 24000 --threads 2 \
---exclude bed0 ${resources}/highLDRegionsIDs.txt \
+plink2 --pfile ${out_dir}/sample_filt_chr${i} --memory 24000 --threads 2 --exclude bed0 ${resources}/highLDRegionsIDs.txt \
 --extract ${out_dir}/LDprune_chr${i}.prune.in --make-pgen --out ${out_dir}/pruned_chr${i}
-wait
-plink2 --pfile ${out_dir}/pruned_chr${i} --make-bed --out ${out_dir}/pruned_chr${i}

@@ -23,14 +23,14 @@ saige=${base_dir}/packages/SAIGE
 
 echo $SLURM_ARRAY_TASK_ID
 i=$SLURM_ARRAY_TASK_ID
-ls -alht ${out_dir}/snp_filt_chr${i}*
+ls -alht ${out_dir}/snpfilt_chr${i}*
 
 # activate SAIGE environment
 conda activate $env
 
 
 Rscript ${saige}/step1_fitNULLGLMM.R \
-        --plinkFile="${out_dir}/pruned_chr${i}" \
+        --plinkFile="${out_dir}/snpfilt_chr${i}" \
         --phenoFile=${out_dir}/chr${i}.pheno \
         --phenoCol=res_distensibility \
         --covarColList=PC1,PC2,PC3,PC4,PC5,PC6,PC7,PC8,PC9,PC10 \

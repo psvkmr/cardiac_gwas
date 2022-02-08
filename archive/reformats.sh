@@ -27,8 +27,8 @@ mkdir -p $out_dir
 
 echo $SLURM_ARRAY_TASK_ID
 i=$SLURM_ARRAY_TASK_ID
-ls -alht ${out_dir}/snp_filt_chr${i}*
+ls -alht ${out_dir}/snpfilt_chr${i}*
 
-plink2 --pfile ${out_dir}/snp_filt_chr${i} --make-bed --out ${out_dir}/snp_filt_chr${i}
-plink2 --pfile ${out_dir}/snp_filt_chr${i} --export vcf vcf-dosage=DS-force --out ${out_dir}/snp_filt_chr${i}
+plink2 --pfile ${out_dir}/snpfilt_chr${i} --make-bed --out ${out_dir}/snpfilt_chr${i}
+plink2 --pfile ${out_dir}/snpfilt_chr${i} --export vcf vcf-dosage=DS-force --out ${out_dir}/snpfilt_chr${i}
 

@@ -41,6 +41,4 @@ plink2 --bgen ${raw_data}/ukb_imp_chr${i}_v3_MAF1_INFO4.bgen ref-first \
 	--threads 2 \
 	--keep-fam ${raw_data}/IDs_final.txt \
 	--make-pgen \
-	--out ${out_dir}/bgen_filt_chr${i}
-wait
-plink2 --pfile ${out_dir}/bgen_filt_chr${i} --make-bed --out ${out_dir}/bgen_filt_chr${i}
+	--out ${out_dir}/sample_filt_chr${i}

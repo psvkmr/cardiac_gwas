@@ -1,13 +1,13 @@
 #!/bin/bash
 
 #SBATCH --partition=brc,shared
-#SBATCH --job-name=gwas_reformat
+#SBATCH --job-name=gwas_snpfilt
 #SBATCH --time=04:00:00
-#SBATCH --mem=40G
+#SBATCH --mem=24G
 #SBATCH --ntasks=2
 #SBATCH --cpus-per-task=8
 #SBATCH --verbose
-#SBATCH --output=/scratch/users/k2142172/tests/array/gwas_reformat_%A_%a.out
+#SBATCH --output=/scratch/users/k2142172/tests/array/gwas_snpfilt_%A_%a.out
 #SBATCH --array=1-2
 
 
@@ -27,8 +27,10 @@ mkdir -p $out_dir
 
 echo $SLURM_ARRAY_TASK_ID
 i=$SLURM_ARRAY_TASK_ID
-ls -alht ${out_dir}/snp_filt_chr${i}*
+ls -alht ${out_dir}/sample_filt_chr${i}*
 
-plink2 --pfile ${out_dir}/snp_filt_chr${i} --make-bed --out ${out_dir}/snp_filt_chr${i}
-plink2 --pfile ${out_dir}/snp_filt_chr${i} --export vcf vcf-dosage=DS-force --out ${out_dir}/snp_filt_chr${i}
-
+plink2 --pfile ${out_dir}/sample_filt_chr${i} --memory 24000 --threads 2  \
+--maf 0.01 --geno 0.1 --hwe 1e-6 --make-pgen --out ${out_dir}/snp_filt_chr${i}
+wait
+plink2 --pfile ${out_dir}/snp_filt_chr${i} --memory 24000 --threads 2 \
+ --freq counts --out ${out_dir}/snp_filt_chr${i}_freq 
