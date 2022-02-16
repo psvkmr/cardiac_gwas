@@ -1,6 +1,7 @@
 library(tidyverse)
 
-setwd('C:/Users/Prasanth/Documents/cardiac_gwas/')
+#https://github.com/GP2-TNC-WG/GP2-Bioinformatics-course/blob/master/Module_III.md
+setwd('C:/Users/Prasanth/Documents/cardiac_gwas/gwas_results/saige/')
 
 saige.files <- lapply(list.files(pattern = 'SAIGE_step2_chr.*.txt'), read.table, header = T)
 saige.names <- lapply(saige.files, function(x) paste0('chr', x$V1[1], sep = ''))
@@ -8,7 +9,7 @@ names(saige.files) <- saige.names
 
 saige <- Reduce(rbind, saige.files)
 
-saige.sig <- filter(saige, p.value < 10E-6)
+saige.sig <- filter(saige, p.value < 10E-8)
 #fwrite(saige.sig, "imputed_sig_res.csv")
 
 saige.log10 <- saige %>%
@@ -16,6 +17,10 @@ saige.log10 <- saige %>%
   mutate(log10P = ifelse(log10Praw > 40, 40, log10Praw)) %>%
   mutate(log10Plevel = ifelse(p.value < 5E-08, "possible", NA)) %>%
   mutate(log10Plevel = ifelse(p.value < 5E-09, "likely", log10Plevel))
+
+# Reduction of the GWAS object
+# This is for more efficient plotting
+# This drops everything not useful in future AUC calcs estiamte in Nalls et al., 2019
 
 saige.filt <- filter(saige.log10, log10P > 3.114074) %>%
   arrange(CHR, POS)
@@ -36,7 +41,7 @@ saige.axis.df <- saige.plotting %>%
 
 saige.manhattan <-
   ggplot(saige.plotting, aes(POScum, log10P)) +
-  geom_point(aes(colour=as.factor(CHR)), alpha = 0.8, size = 1.3) +
+  geom_point(aes(colour=as.factor(CHR)), alpha = 0.8, size = 0.8) +
   scale_color_manual(values = rep(c("dark grey", "black"), 22)) +
   scale_x_continuous(label = saige.axis.df$CHR, breaks = saige.axis.df$center) +
   scale_y_continuous(expand = c(0, 0.05)) +

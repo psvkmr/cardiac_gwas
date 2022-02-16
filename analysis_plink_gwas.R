@@ -1,6 +1,7 @@
 library(tidyverse)
 
-setwd('C:/Users/Prasanth/Documents/cardiac_gwas/')
+#https://github.com/GP2-TNC-WG/GP2-Bioinformatics-course/blob/master/Module_III.md
+setwd('C:/Users/Prasanth/Documents/cardiac_gwas/strict_gwas/plink/')
 
 plink.files <- lapply(list.files(pattern = 'gwas_results_chr.*.res_distensibility.glm.linear'), read.table, comment.char = "", header = T)
 plink.names <- lapply(plink.files, function(x) paste0('chr', x$V1[1], sep = ''))
@@ -8,6 +9,7 @@ names(plink.files) <- plink.names
 
 plink <- Reduce(rbind, plink.files)
 names(plink)[1] <- 'CHR'
+#write.csv(plink, 'plink_summary_statistics.csv', row.names = F, quote = F)
 
 plink.sig <- filter(plink, P < 10E-6)
 #fwrite(saige.sig, "imputed_sig_res.csv")
@@ -17,6 +19,10 @@ plink.log10 <- plink %>%
   mutate(log10P = ifelse(log10Praw > 40, 40, log10Praw)) %>%
   mutate(log10Plevel = ifelse(P < 5E-08, "possible", NA)) %>%
   mutate(log10Plevel = ifelse(P < 5E-09, "likely", log10Plevel))
+
+# Reduction of the GWAS object
+# This is for more efficient plotting
+# This drops everything not useful in future AUC calcs estiamte in Nalls et al., 2019
 
 plink.filt <- filter(plink.log10, log10P > 3.114074) %>%
   arrange(CHR, POS)
@@ -37,7 +43,7 @@ plink.axis.df <- plink.plotting %>%
 
 plink.manhattan <-
   ggplot(plink.plotting, aes(POScum, log10P)) +
-  geom_point(aes(colour=as.factor(CHR)), alpha = 0.8, size = 1.3) +
+  geom_point(aes(colour=as.factor(CHR)), alpha = 0.8, size = 0.8) +
   scale_color_manual(values = rep(c("dark grey", "black"), 22)) +
   scale_x_continuous(label = plink.axis.df$CHR, breaks = plink.axis.df$center) +
   scale_y_continuous(expand = c(0, 0.05)) +
@@ -65,3 +71,6 @@ plink.lambda <- median(plink.chisq) / qchisq(0.5,1)
 
 plink.alt.chisq <- qnorm(plink$P/2)
 plink.alt.lambda <- median(plink.alt.chisq^2, na.rm=T)/qchisq(0.5,df=1)
+
+n.samples <- 34214
+plink.lambda1000 <- 1 + (plink.lambda - 1) * (1/n.samples) * 500
