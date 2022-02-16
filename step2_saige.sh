@@ -8,7 +8,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --verbose
 #SBATCH --output=/scratch/users/k2142172/tests/array/saige_step2_%A_%a.out
-#SBATCH --array=1-2
+#SBATCH --array=[1-22]%6
 
 # load plink2
 module load apps/plink2/2.0.0a2

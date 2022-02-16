@@ -8,7 +8,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --verbose
 #SBATCH --output=/scratch/users/k2142172/tests/array/gwas_snpfilt_%A_%a.out
-#SBATCH --array=1-2
+#SBATCH --array=[1-22]%6
 
 
 # script exits if return value of a command is not zero
@@ -27,9 +27,9 @@ mkdir -p $out_dir
 
 echo $SLURM_ARRAY_TASK_ID
 i=$SLURM_ARRAY_TASK_ID
-ls -alht ${out_dir}/sample_filt_chr${i}*
+ls -alht ${out_dir}/bgen_filt_chr${i}*
 
-plink2 --pfile ${out_dir}/sample_filt_chr${i} --memory 24000 --threads 2  \
+plink2 --pfile ${out_dir}/bgen_filt_chr${i} --memory 24000 --threads 2  \
 --maf 0.01 --geno 0.1 --hwe 1e-6 --make-pgen --out ${out_dir}/snp_filt_chr${i}
 wait
 plink2 --pfile ${out_dir}/snp_filt_chr${i} --memory 24000 --threads 2 \

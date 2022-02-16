@@ -8,7 +8,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --verbose
 #SBATCH --output=/scratch/users/k2142172/tests/array/gwas_plink_%A_%a.out
-#SBATCH --array=1-2
+#SBATCH --array=1-22
 
 
 # script exits if return value of a command is not zero

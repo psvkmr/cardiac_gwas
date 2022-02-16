@@ -8,7 +8,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --verbose
 #SBATCH --output=/scratch/users/k2142172/tests/array/saige_prep_%A_%a.out
-#SBATCH --array=1-2
+#SBATCH --array=[1-22]%6
 
 # load plink2
 module load apps/plink2/2.0.0a2
@@ -39,16 +39,9 @@ wait
 Rscript ${base_dir}/scripts/guys_projects/cardiac_gwas/make_pheno.R ${i}
 wait
 
-# compress the VCF file version of final data files
-$bgzip -c ${out_dir}/snp_filt_chr${i}.vcf > ${out_dir}/snp_filt_chr${i}.vcf.gz
-wait
-
-# index created compressed VCF file
-$bcftools index ${out_dir}/snp_filt_chr${i}.vcf.gz
-wait
-
 # SAIGE requires FORMAT to contain dosage DS info only, no genotypes GT
 # so remove GT info and re-index
 $bcftools annotate -x FORMAT/GT ${out_dir}/snp_filt_chr${i}.vcf.gz -O z -o ${out_dir}/snp_filt_ds_chr${i}.vcf.gz
+wait
 $bcftools index ${out_dir}/snp_filt_ds_chr${i}.vcf.gz
 
