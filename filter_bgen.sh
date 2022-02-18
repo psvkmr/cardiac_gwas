@@ -8,7 +8,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --verbose
 #SBATCH --output=/scratch/users/k2142172/tests/array/gwas_bgen_%A_%a.out
-#SBATCH --array=1-2
+#SBATCH --array=[1-22]%6
 
 
 # script exits if return value of a command is not zero
@@ -25,7 +25,8 @@ set -v
 #Load Plink module
 module load apps/plink2/2.0.0a2
 
-raw_data=/scratch/users/k2142172/outputs/cardiac_gwas/ukb_files
+raw_data=/scratch/datasets/ukbiobank/June2017/Imputed
+marina_data=/scratch/users/stwb3495/Shared_Folder_PS
 out_dir=/scratch/users/k2142172/outputs/cardiac_gwas/gwas_run
 
 mkdir -p $out_dir
@@ -36,11 +37,12 @@ ls -alht ${raw_data}/ukb_imp_chr${i}_v3_MAF1_INFO4.bgen
 
 
 plink2 --bgen ${raw_data}/ukb_imp_chr${i}_v3_MAF1_INFO4.bgen ref-first \
-  	--sample ${raw_data}/ukb22828_c${i}_b0_v3_s487253.sample \
+  	--sample ${marina_data}/ukb22828_c${i}_b0_v3_s487253.sample \
 	--memory 24000 \
 	--threads 2 \
-	--keep-fam ${raw_data}/IDs_final.txt \
+	--keep-fam ${marina_data}/IDs_final.txt \
+	--mind 0.05 \
 	--make-pgen \
 	--out ${out_dir}/bgen_filt_chr${i}
-wait
-plink2 --pfile ${out_dir}/bgen_filt_chr${i} --make-bed --out ${out_dir}/bgen_filt_chr${i}
+#wait
+#plink2 --pfile ${out_dir}/bgen_filt_chr${i} --make-bed --out ${out_dir}/bgen_filt_chr${i}
