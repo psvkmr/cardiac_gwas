@@ -10,7 +10,9 @@ names(saige.files) <- saige.names
 saige <- Reduce(rbind, saige.files)
 
 saige.sig <- filter(saige, p.value < 10E-8)
-#fwrite(saige.sig, "imputed_sig_res.csv")
+# write.csv(saige.sig, 
+#           'C:/Users/Prasanth/Documents/cardiac_gwas/gwas_results/saige/sig_summary_stats.csv', 
+#           row.names = F, quote = F)
 
 saige.log10 <- saige %>%
   mutate(log10Praw = -1*log10(p.value)) %>%
