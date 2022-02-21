@@ -30,7 +30,7 @@ i=$SLURM_ARRAY_TASK_ID
 ls -alht ${out_dir}/bgen_filt_chr${i}*
 
 plink2 --pfile ${out_dir}/bgen_filt_chr${i} --memory 24000 --threads 2  \
---maf 0.01 --geno 0.1 --hwe 1e-6 --make-pgen --out ${out_dir}/snp_filt_chr${i}
+--maf 0.01 --geno 0.05 --hwe 1e-6 --snps-only --make-pgen --out ${out_dir}/snp_filt_chr${i}
 wait
 plink2 --pfile ${out_dir}/snp_filt_chr${i} --memory 24000 --threads 2 \
  --freq counts --out ${out_dir}/snp_filt_chr${i}_freq 
