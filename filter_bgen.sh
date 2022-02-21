@@ -41,8 +41,5 @@ plink2 --bgen ${raw_data}/ukb_imp_chr${i}_v3_MAF1_INFO4.bgen ref-first \
 	--memory 24000 \
 	--threads 2 \
 	--keep-fam ${marina_data}/IDs_final.txt \
-	--mind 0.05 \
 	--make-pgen \
 	--out ${out_dir}/bgen_filt_chr${i}
-#wait
-#plink2 --pfile ${out_dir}/bgen_filt_chr${i} --make-bed --out ${out_dir}/bgen_filt_chr${i}
