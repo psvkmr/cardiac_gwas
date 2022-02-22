@@ -23,7 +23,7 @@ saige=${base_dir}/packages/SAIGE
 
 echo $SLURM_ARRAY_TASK_ID
 i=$SLURM_ARRAY_TASK_ID
-ls -alht ${out_dir}/snp_filt_chr${i}*
+ls -alht ${out_dir}/pruned_chr${i}*
 
 # activate SAIGE environment
 conda activate $env

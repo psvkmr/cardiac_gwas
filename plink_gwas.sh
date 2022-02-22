@@ -27,9 +27,9 @@ mkdir -p $out_dir
 
 echo $SLURM_ARRAY_TASK_ID
 i=$SLURM_ARRAY_TASK_ID
-ls -alht ${out_dir}/snp_filt_chr${i}*
+ls -alht ${out_dir}/sample_filt_chr${i}*
 
-plink2 --pfile ${out_dir}/snp_filt_chr${i} \
+plink2 --pfile ${out_dir}/sample_filt_chr${i} \
  --memory 24000 \
 --threads 2  \
 --pheno ${out_dir}/res_distensibility3.txt \

@@ -30,4 +30,4 @@ i=$SLURM_ARRAY_TASK_ID
 ls -alht ${out_dir}/pruned_chr${i}*
 
 plink2 --pfile ${out_dir}/pruned_chr${i} --memory 40000 --threads 2 \
---pca --out ${out_dir}/pca_chr${i}
+--pca 20 --out ${out_dir}/pca_chr${i}
