@@ -23,16 +23,16 @@ saige=${base_dir}/packages/SAIGE
 
 echo $SLURM_ARRAY_TASK_ID
 i=$SLURM_ARRAY_TASK_ID
-ls -alht ${out_dir}/snp_filt_chr${i}*
+ls -alht ${out_dir}/sample_filt_chr${i}*
 
 # activate SAIGE environment
 conda activate $env
 
 
 Rscript ${saige}/step2_SPAtests.R \
-        --vcfFile=${out_dir}/snp_filt_ds_chr${i}.vcf.gz \
-        --vcfFileIndex=${out_dir}/snp_filt_ds_chr${i}.vcf.gz.csi \
-        --sampleFile=${out_dir}/snp_filt_chr${i}.sample \
+        --vcfFile=${out_dir}/sample_filt_ds_chr${i}.vcf.gz \
+        --vcfFileIndex=${out_dir}/sample_filt_ds_chr${i}.vcf.gz.csi \
+        --sampleFile=${out_dir}/sample_filt_chr${i}.sample \
         --vcfField=DS \
         --chrom=${i} \
         --minMAC=1 \

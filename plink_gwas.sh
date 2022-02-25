@@ -27,15 +27,15 @@ mkdir -p $out_dir
 
 echo $SLURM_ARRAY_TASK_ID
 i=$SLURM_ARRAY_TASK_ID
-ls -alht ${out_dir}/snp_filt_chr${i}*
+ls -alht ${out_dir}/sample_filt_chr${i}*
 
-plink2 --pfile ${out_dir}/snp_filt_chr${i} \
+plink2 --pfile ${out_dir}/sample_filt_chr${i} \
  --memory 24000 \
 --threads 2  \
 --pheno ${out_dir}/res_distensibility3.txt \
 --covar ${out_dir}/pca_chr${i}.eigenvec \
 --pheno-name res_distensibility \
---covar-name PC1,PC2,PC3,PC4,PC5,PC6,PC7,PC8,PC9,PC10 \
+--covar-name PC1,PC2,PC3,PC4,PC5,PC6,PC7,PC8,PC9,PC10,PC11,PC12,PC13,PC14,PC15,PC16,PC17,PC18,PC19,PC20 \
 --glm hide-covar \
 --ci 0.95 \
 --out ${out_dir}/gwas_results_chr${i}
