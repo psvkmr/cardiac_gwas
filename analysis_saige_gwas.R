@@ -1,17 +1,21 @@
 library(tidyverse)
 
 #https://github.com/GP2-TNC-WG/GP2-Bioinformatics-course/blob/master/Module_III.md
-setwd('C:/Users/Prasanth/Documents/cardiac_gwas/gwas_results/saige/')
-
-saige.files <- lapply(list.files(pattern = 'SAIGE_step2_chr.*.txt'), read.table, header = T)
+saige.files <- lapply(list.files(pattern = 'SAIGE_step2_chr.*.txt', 
+                                 path = 'C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/saige/', 
+                                 full.names = T), 
+                      read.table, comment.char = "", header = T)
 saige.names <- lapply(saige.files, function(x) paste0('chr', x$V1[1], sep = ''))
 names(saige.files) <- saige.names
 
 saige <- Reduce(rbind, saige.files)
+# write.csv(saige,
+#           'C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/saige_summary_statistics.csv',
+#           row.names = F, quote = F)
 
-saige.sig <- filter(saige, p.value < 10E-8)
-# write.csv(saige.sig, 
-#           'C:/Users/Prasanth/Documents/cardiac_gwas/gwas_results/saige/sig_summary_stats.csv', 
+saige.sig <- filter(saige, p.value < 5E-8)
+# write.csv(saige.sig,
+#           'C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/saige_sig_summary_statistics.csv',
 #           row.names = F, quote = F)
 
 saige.log10 <- saige %>%
@@ -51,6 +55,8 @@ saige.manhattan <-
   labs(x = "CHR", y = "-log10P") +
   theme(legend.position = "none") +
   geom_abline(intercept = -log10(5E-08), slope = 0, linetype = 2)
+# ggsave('C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/saige_manhattan.png', 
+#        plot = saige.manhattan, dpi = 400)
 
 saige.qqplotter <- function(df) {
   df <- df[!is.na(df$p.value), ]
@@ -64,10 +70,12 @@ saige.qqplotter <- function(df) {
 }
 
 saige.qqplt <- saige.qqplotter(saige)
+# ggsave('C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/saige_qqplot.png',
+#        plot = plink.qqplt, dpi = 400)
 
 saige.chisq <- qchisq(1-saige$p.value, 1)
 saige.lambda <- median(saige.chisq) / qchisq(0.5,1)
-#write.table(lambda, "lambda_genomic_inflation_value.txt")
+#write.table(saige.lambda, "C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/saige_lambda_value.txt")
 
 saige.alt.chisq <- qnorm(saige$p.value/2)
 saige.alt.lambda <- median(saige.alt.chisq^2, na.rm=T)/qchisq(0.5,df=1)

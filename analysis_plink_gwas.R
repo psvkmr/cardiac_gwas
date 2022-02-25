@@ -1,18 +1,22 @@
 library(tidyverse)
 
 #https://github.com/GP2-TNC-WG/GP2-Bioinformatics-course/blob/master/Module_III.md
-setwd('C:/Users/Prasanth/Documents/cardiac_gwas/strict_gwas/plink/')
-
-plink.files <- lapply(list.files(pattern = 'gwas_results_chr.*.res_distensibility.glm.linear'), read.table, comment.char = "", header = T)
+plink.files <- lapply(list.files(pattern = 'gwas_results_chr.*.res_distensibility.glm.linear', 
+                                 path = 'C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/plink/', 
+                                 full.names = T), 
+                      read.table, comment.char = "", header = T)
 plink.names <- lapply(plink.files, function(x) paste0('chr', x$V1[1], sep = ''))
 names(plink.files) <- plink.names
 
 plink <- Reduce(rbind, plink.files)
 names(plink)[1] <- 'CHR'
-#write.csv(plink, 'plink_summary_statistics.csv', row.names = F, quote = F)
+# write.csv(plink,
+#           'C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/plink_summary_statistics.csv',
+#           row.names = F, quote = F)
 
-plink.sig <- filter(plink, P < 10E-6)
-#fwrite(saige.sig, "imputed_sig_res.csv")
+plink.sig <- filter(plink, P < 5E-8)
+# write.csv(plink.sig,
+#           "C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/plink_sig_summary_statistics.csv")
 
 plink.log10 <- plink %>%
   mutate(log10Praw = -1*log10(P)) %>%
@@ -51,6 +55,8 @@ plink.manhattan <-
   labs(x = "CHR", y = "-log10P") +
   theme(legend.position = "none") +
   geom_abline(intercept = -log10(5E-08), slope = 0, linetype = 2)
+# ggsave('C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/plink_manhattan.png', 
+#        plot = plink.manhattan, dpi = 400)
 
 plink.qqplotter <- function(df) {
   df <- df[!is.na(df$P), ]
@@ -64,10 +70,12 @@ plink.qqplotter <- function(df) {
 }
 
 plink.qqplt <- plink.qqplotter(plink)
+# ggsave('C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/plink_qqplot.png',
+#        plot = plink.qqplt, dpi = 400)
 
 plink.chisq <- qchisq(1-plink$P, 1)
 plink.lambda <- median(plink.chisq) / qchisq(0.5,1)
-#write.table(lambda, "lambda_genomic_inflation_value.txt")
+#write.table(plink.lambda, "C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/plink_lambda_value.txt")
 
 plink.alt.chisq <- qnorm(plink$P/2)
 plink.alt.lambda <- median(plink.alt.chisq^2, na.rm=T)/qchisq(0.5,df=1)

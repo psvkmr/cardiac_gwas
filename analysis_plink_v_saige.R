@@ -1,5 +1,6 @@
+library(PCAtools)
 
-# plink v saige
+# plink v saige pvalues
 ###############################################################################
 plink.merge <- plink.filt
 saige.merge <- saige.filt
@@ -17,30 +18,39 @@ View(head(arrange(merged, p.value.plink)))
 
 
 ###########################################################################
-# read files
+# read pheno files
 
-pheno.files <- lapply(list.files(path = 'C:/Users/Prasanth/Documents/cardiac_gwas/gwas_results/pheno', 
-                                 pattern = 'chr.*.pheno', full.names = T), read.table, header = T)
-#pheno.names <- lapply(pheno.files, function(x) paste0('chr', x$V1[1], sep = ''))
-#names(pheno.files) <- pheno.names
-lm(res_distensibility~PC1, pheno.files[[1]])
-plot(pheno.files[[1]]$PC1, pheno.files[[1]]$res_distensibility)
-plot(pheno.files[[1]]$PC2, pheno.files[[1]]$res_distensibility)
+pheno.file.paths <- list.files(path = 'C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/pheno',
+                               pattern = 'chr.*.pheno', full.names = T)
+pheno.files <- lapply(pheno.file.paths, read.table, header = T)
+pheno.names <- gsub('.pheno', '', gsub('^.*/pheno/', '', pheno.file.paths))
+names(pheno.files) <- pheno.names
+
+# plot(pheno.files$chr7$PC1, pheno.files$chr7$res_distensibility)
+# plot(pheno.files$chr7$PC2, pheno.files$chr7$res_distensibility)
+ggplot(pheno.files$chr7, aes(PC1, PC2)) + 
+  geom_point(aes(colour = res_distensibility), alpha = 0.8) +
+  scale_colour_viridis_c()
+
+pcas <- lapply(pheno.files, function(x) as.matrix(x[, 3:22]))
+
 
 ###############################################################################
 # extract sig snp genotypes
 
-saige.sig.file <- saige.sig[, c('CHR', 'POS')]
-#write.table(saige.sig.file, 'C:/Users/Prasanth/Documents/cardiac_gwas/gwas_results/saige_sig.tab', 
+extract.saige.dosages <- saige.sig[, c('CHR', 'POS')]
+# write.table(extract.saige.dosages, 'C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/extract_saige_dosages.tab',
 #            quote = F, sep = '\t', col.names = F, row.names = F)
+# use bcftools on rosalind to extract from dosage vcf files
 
-saige.sig.dosages.chr7 <- read.table('C:/Users/Prasanth/Documents/cardiac_gwas/gwas_results/saige_sig_dosages_chr7.tab', 
-                                     comment.char = '', skip = 10, header = T)
-saige.sig.dos.7.mat <- saige.sig.dosages.chr7[-2, ]
-saige.sig.dos.7.mat <- dplyr::select(saige.sig.dos.7.mat, -c('X.CHROM', 'POS', 'REF', 'ALT', 'QUAL', 'FILTER', 'INFO', 'FORMAT')) %>% 
-  `rownames<-`(NULL) %>%
-  column_to_rownames('ID') %>%
-  t()
+saige.sig.dosages.chr7 <- read.table('C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/extracted_saige_sig_dosages_chr7.tab', 
+                                     comment.char = '', header = F)
+vcf.samples <- read.table('C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/vcf_sample_names.txt')
+vcf.headers <- c('CHROM', 'POS', 'ID', 'REF', 'ALT', 'QUAL', vcf.samples)
+names(saige.sig.dosages.chr7) <- vcf.headers
+
+saige.sig.dos.7.mat <- dplyr::select(saige.sig.dosages.chr7, -c('CHROM', 'POS', 'REF', 'ALT', 'QUAL')) %>% 
+  column_to_rownames('ID')
 
 rownames(saige.sig.dos.7.mat) <- gsub('^X.*_', '', rownames(saige.sig.dos.7.mat))
 saige.sig.dos.7.mat <- saige.sig.dos.7.mat %>% as.data.frame() %>% rownames_to_column('ID')
@@ -48,7 +58,7 @@ saige.sig.dos.7.mat <- saige.sig.dos.7.mat %>% as.data.frame() %>% rownames_to_c
 ########################################################################################
 # check genotype to dist, pc1 correlations
 
-pheno.7 <- pheno.files[[7]]
+pheno.7 <- pheno.files$chr7
 pheno.7$FID <- as.character(pheno.7$FID)
 saige.sig.dos.res.7 <- left_join(pheno.7, saige.sig.dos.7.mat, by = c('FID' = 'ID'))
 saige.sig.dos.res.7 <- na.omit(saige.sig.dos.res.7)
@@ -69,7 +79,8 @@ cor(saige.sig.dos.res.7$PC2, saige.sig.dos.res.7$res_distensibility)
 plot(saige.sig.dos.res.7$res_distensibility, saige.sig.dos.res.7$dos.total)
 
 ######################################################################
-# pca
+# pca outliers
+
 pca.files <- lapply(list.files(path = 'C:/Users/Prasanth/Documents/cardiac_gwas/gwas_results/pca',
                           pattern = 'pca_chr.*.eigenvec', full.names = T),
                read.table, header = F)
