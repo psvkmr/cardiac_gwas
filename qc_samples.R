@@ -1,17 +1,17 @@
 # sample QC
 
-setwd('C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas')
+gwas.dir <- 'C:/Users/Prasanth/Documents/cardiac_gwas/min_aorta_gwas'
 
 # plink-calculated inbreeding coefficient and expected vs observed heterozygosity rates
-het.files <- lapply(X = list.files(pattern = '*.het',
-                                   path = 'C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/', 
-                                   full.names = T), 
+het.files <- lapply(X = list.files(pattern = '*.het$',
+                                   path = paste0(gwas.dir, '/processing/het'),
+                                   full.names = T),
                     read.table, 
                     comment.char = '', 
                     header = T)
 
-het.names <- lapply(X = list.files(pattern = '*.het',
-                                   path = 'C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/', 
+het.names <- lapply(X = list.files(pattern = '*.het$',
+                                   path = paste0(gwas.dir, '/processing/het'),
                                    full.names = T),
                     function(x) gsub('^.*snp_filt_', '', x))
 
@@ -66,16 +66,16 @@ het.outliers.df <- het.files$chr1_het.het[c(het.rate.high, het.rate.low), c('X.F
 #######################################################################################
 
 # n. of missing genotypes per sample per chr
-smiss.files <- lapply(X = list.files(pattern = '*.smiss', 
-                                     path = 'C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/', 
-                                     full.names = T), 
+smiss.files <- lapply(X = list.files(pattern = '*.smiss$',
+                                     path = paste0(gwas.dir, '/processing/miss'),
+                                     full.names = T),
                       read.table, 
                       comment.char = '', 
                       header = T)
 
-smiss.names <- lapply(X = list.files(pattern = '*.smiss',
-                                   path = 'C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/', 
-                                   full.names = T),
+smiss.names <- lapply(X = list.files(pattern = '*.smiss$',
+                                     path = paste0(gwas.dir, '/processing/miss'),
+                                     full.names = T),
                     function(x) gsub('^.*snp_filt_', '', x))
 
 names(smiss.files ) <- smiss.names
@@ -105,7 +105,7 @@ withdrawn.consent.samples.df <- data.frame('X.FID' = withdrawn.consent.samples,
 het.smiss.withdrawn.df <- unique(data.frame(rbind(het.or.smiss.outliers.df, withdrawn.consent.samples.df)))
 
 # final outliers write out file
-# write.table(het.outliers.df, 'het_outlier_samples.txt', row.names = F, col.names = F, sep = '\t', quote = F)
-# write.table(sample.miss.df, 'excess_missing_samples.txt', row.names = F, col.names = F, sep = '\t', quote = F)
-# write.table(withdrawn.consent.samples.df, 'participant_withdrawn_samples.txt', row.names = F, col.names = F, sep = '\t', quote = F)
-#nrow write.table(het.smiss.withdrawn.df, 'het_smiss_withdrawn.txt', row.names = F, col.names = F, sep = '\t', quote = F)
+ # write.table(het.outliers.df, paste0(gwas.dir, '/processing/het_outlier_samples.txt'), row.names = F, col.names = F, sep = '\t', quote = F)
+ # write.table(sample.miss.df, paste0(gwas.dir, '/processing/excess_missing_samples.txt'), row.names = F, col.names = F, sep = '\t', quote = F)
+ # write.table(withdrawn.consent.samples.df, paste0(gwas.dir, '/processing/participant_withdrawn_samples.txt'), row.names = F, col.names = F, sep = '\t', quote = F)
+ # write.table(het.smiss.withdrawn.df, paste0(gwas.dir, '/processing/het_smiss_withdrawn.txt'), row.names = F, col.names = F, sep = '\t', quote = F)
