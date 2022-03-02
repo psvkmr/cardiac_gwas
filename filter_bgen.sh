@@ -40,6 +40,8 @@ plink2 --bgen ${raw_data}/ukb_imp_chr${i}_v3_MAF1_INFO4.bgen ref-first \
   	--sample ${marina_data}/ukb22828_c${i}_b0_v3_s487253.sample \
 	--memory 24000 \
 	--threads 2 \
-	--keep-fam ${marina_data}/IDs_final.txt \
+	--keep-fam /scratch/users/k2142172/outputs/cardiac_gwas/min_aortic_area_IDs.txt \
 	--make-pgen \
 	--out ${out_dir}/bgen_filt_chr${i}
+
+#       --keep-fam ${marina_data}/IDs_final.txt \
