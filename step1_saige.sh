@@ -33,7 +33,7 @@ Rscript ${saige}/step1_fitNULLGLMM.R \
         --plinkFile="${out_dir}/pruned_chr${i}" \
         --phenoFile=${out_dir}/chr${i}.pheno \
         --phenoCol=res_distensibility \
-        --covarColList=PC1,PC2,PC3,PC4,PC5,PC6,PC7,PC8,PC9,PC10 \
+        --covarColList=PC1,PC2,PC3,PC4,PC5,PC6,PC7,PC8,PC9,PC10,PC11,PC12,PC13,PC14,PC15,PC16,PC17,PC18,PC19,PC20 \
         --sampleIDColinphenoFile=IID \
         --traitType=quantitative \
         --invNormalize=TRUE \
