@@ -13,6 +13,8 @@ merged <- full_join(plink.merge,
                     suffix = c('.plink', '.saige'))
 
 plot(-log10(merged$p.value.plink), -log10(merged$p.value.saige))
+plot(-log10(merged$BETA.plink), -log10(merged$BETA.saige))
+plot(-log10(merged$Tstat.plink), -log10(merged$Tstat.saige))
 
 View(head(arrange(merged, p.value.plink)))
 
@@ -129,6 +131,24 @@ final.pcas <- lapply(final.pcas, function(x) `names<-`(x, c('#FID', 'IID', paste
 
 ###############################################################################
 
+#saige vep 
+
+saige.vep <- read.table('C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/saige/vep_output_saige_sig.txt', 
+                        comment.char = '', header = T)
+
+saige.vep.sub <- saige.vep[, c('X.Uploaded_variation', 'Allele', 'Consequence', 
+                               'IMPACT', 'SYMBOL', 'Gene', 'BIOTYPE', 'AF', 'AFR_AF', 
+                               'AMR_AF', 'EAS_AF', 'EUR_AF', 'SAS_AF')]
+saige.vep.sub <- unique.data.frame(saige.vep.sub)
+
+saige.vep.sub <- merge(saige.sig, saige.vep.sub, by.x = 'SNPID', by.y = 'X.Uploaded_variation')
+af.comparison <- saige.vep.sub[, c('SNPID', 'Allele1', 'Allele2', 'AF_Allele2', 
+                                   'Allele', 'AF', 'AMR_AF', 'EUR_AF')]
+af.correlation.scatter <- plot(af.comparison$AF_Allele2, af.comparison$EUR_AF)
+#plot(af.comparison$AF_Allele2, af.comparison$AMR_AF)
+#table(saige.vep.sub$SYMBOL)
+
+#####################################################################################
 # mitchell
 mitchell.cat <- read_delim('mitchell_gwas_pubmedid_22068335.tsv', delim = '\t')
 mitchell.own <- read.csv('mitchell_own_table.csv')

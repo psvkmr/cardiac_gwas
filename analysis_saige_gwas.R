@@ -1,8 +1,9 @@
 library(tidyverse)
 
 #https://github.com/GP2-TNC-WG/GP2-Bioinformatics-course/blob/master/Module_III.md
+saige.dir <- 'C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/saige/'
 saige.files <- lapply(list.files(pattern = 'SAIGE_step2_chr.*.txt', 
-                                 path = 'C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/saige/', 
+                                 path = paste0(saige.dir, 'outputs'), 
                                  full.names = T), 
                       read.table, comment.char = "", header = T)
 saige.names <- lapply(saige.files, function(x) paste0('chr', x$V1[1], sep = ''))

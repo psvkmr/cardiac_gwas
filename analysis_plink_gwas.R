@@ -1,8 +1,9 @@
 library(tidyverse)
 
 #https://github.com/GP2-TNC-WG/GP2-Bioinformatics-course/blob/master/Module_III.md
-plink.files <- lapply(list.files(pattern = 'gwas_results_chr.*.res_distensibility.glm.linear', 
-                                 path = 'C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/plink/', 
+plink.dir <- 'C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/plink/'
+plink.files <- lapply(list.files(pattern = '*.linear', 
+                                 path = paste0(plink.dir, 'outputs'), 
                                  full.names = T), 
                       read.table, comment.char = "", header = T)
 plink.names <- lapply(plink.files, function(x) paste0('chr', x$V1[1], sep = ''))
