@@ -27,3 +27,7 @@ ls ${out_dir}/pruned_chr*.pgen | cut -d. -f 1 > ${out_dir}/pruned_to_merge.txt
 wait
 $plink2 --pmerge-list ${out_dir}/pruned_to_merge.txt pfile --memory 5000 \
 --merge-max-allele-ct 2 --out ${out_dir}/all_pruned_merged
+wait
+$plink2 --pfile ${out_dir}/all_pruned_merged --memory 5000 \
+--make-bed --out ${out_dir}/all_pruned_merged
+
