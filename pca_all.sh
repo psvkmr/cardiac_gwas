@@ -2,9 +2,9 @@
 
 #SBATCH --partition=brc,shared
 #SBATCH --job-name=gwas_pca
-#SBATCH --time=04:00:00
+#SBATCH --time=12:00:00
 #SBATCH --mem=40G
-#SBATCH --ntasks=2
+#SBATCH --ntasks=4
 #SBATCH --cpus-per-task=8
 #SBATCH --verbose
 #SBATCH --output=/scratch/users/k2142172/tests/array/pca_all.out
@@ -26,5 +26,5 @@ mkdir -p $out_dir
 
 ls -alht ${out_dir}/all_pruned_merged*
 
-plink2 --pfile ${out_dir}/all_pruned_merged --memory 40000 --threads 2 \
+plink2 --pfile ${out_dir}/all_pruned_merged --memory 40000 --threads 4 \
 --pca 20 --out ${out_dir}/pca
