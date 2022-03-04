@@ -25,6 +25,7 @@ set -v
 #Load Plink module
 module load apps/plink2/2.0.0a2
 
+sample_ids=$1
 raw_data=/scratch/datasets/ukbiobank/June2017/Imputed
 marina_data=/scratch/users/stwb3495/Shared_Folder_PS
 out_dir=/scratch/users/k2142172/outputs/cardiac_gwas/gwas_run
@@ -40,8 +41,6 @@ plink2 --bgen ${raw_data}/ukb_imp_chr${i}_v3_MAF1_INFO4.bgen ref-first \
   	--sample ${marina_data}/ukb22828_c${i}_b0_v3_s487253.sample \
 	--memory 24000 \
 	--threads 2 \
-	--keep-fam /scratch/users/k2142172/outputs/cardiac_gwas/min_aortic_area_IDs.txt \
+	--keep-fam $1 \
 	--make-pgen \
 	--out ${out_dir}/bgen_filt_chr${i}
-
-#       --keep-fam ${marina_data}/IDs_final.txt \
