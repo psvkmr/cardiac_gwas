@@ -35,8 +35,11 @@ ls -alht ${out_dir}/sample_filt_chr${i}*
 awk '{print $1}' ${out_dir}/sample_filt_chr${i}.fam > ${out_dir}/sample_filt_chr${i}.sample
 wait
 
-# submit R script which merges res_distensibility phenotype with PCA PC values as one phenotype file
-Rscript ${base_dir}/scripts/guys_projects/cardiac_gwas/make_pheno.R ${i}
+# submit R script which merges phenotype with PCA PC values as one phenotype file
+if [ $i == 1 ]
+then
+Rscript ${base_dir}/scripts/guys_projects/cardiac_gwas/make_pheno.R $1
+fi
 wait
 
 # SAIGE requires FORMAT to contain dosage DS info only, no genotypes GT
