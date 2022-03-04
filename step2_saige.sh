@@ -36,8 +36,8 @@ Rscript ${saige}/step2_SPAtests.R \
         --vcfField=DS \
         --chrom=${i} \
         --minMAC=1 \
-        --GMMATmodelFile=${out_dir}/SAIGE_step1_chr${i}.rda \
-        --varianceRatioFile=${out_dir}/SAIGE_step1_chr${i}.varianceRatio.txt \
+        --GMMATmodelFile=${out_dir}/SAIGE_step1.rda \
+        --varianceRatioFile=${out_dir}/SAIGE_step1.varianceRatio.txt \
         --SAIGEOutputFile=${out_dir}/SAIGE_step2_chr${i}.txt \
         --numLinesOutput=2 \
         --LOCO=FALSE \
