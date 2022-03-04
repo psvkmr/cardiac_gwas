@@ -33,7 +33,7 @@ plink2 --pfile ${out_dir}/sample_filt_chr${i} \
  --memory 24000 \
 --threads 2  \
 --pheno ${out_dir}/res_distensibility3.txt \
---covar ${out_dir}/pca_chr${i}.eigenvec \
+--covar ${out_dir}/pca.eigenvec \
 --pheno-name res_distensibility \
 --covar-name PC1,PC2,PC3,PC4,PC5,PC6,PC7,PC8,PC9,PC10,PC11,PC12,PC13,PC14,PC15,PC16,PC17,PC18,PC19,PC20 \
 --glm hide-covar \
