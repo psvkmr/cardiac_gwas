@@ -19,7 +19,7 @@ set -v
 #module load apps/plink2/2.0.0a2
 
 plink2=/scratch/users/k2142172/packages/plink2
-out_dir=/scratch/users/k2142172/outputs/cardiac_gwas/clean_gwas
+out_dir=/scratch/users/k2142172/outputs/cardiac_gwas/gwas_run
 
 mkdir -p $out_dir
 
