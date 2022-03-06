@@ -23,6 +23,12 @@ module load apps/plink2/2.0.0a2
 
 out_dir=/scratch/users/k2142172/outputs/cardiac_gwas/gwas_run
 
+# phenotype files and col name
+# /scratch/users/k2142172/outputs/cardiac_gwas/res_distensibility3.txt res_distensibility
+# /scratch/users/k2142172/outputs/cardiac_gwas/min_aortic_area_phenotype.txt residual_min_aortic_area_mm2
+pheno_file=$1
+pheno_name=$2
+
 mkdir -p $out_dir
 
 echo $SLURM_ARRAY_TASK_ID
@@ -32,9 +38,9 @@ ls -alht ${out_dir}/sample_filt_chr${i}*
 plink2 --pfile ${out_dir}/sample_filt_chr${i} \
  --memory 24000 \
 --threads 2  \
---pheno ${out_dir}/res_distensibility3.txt \
+--pheno ${pheno_file} \
 --covar ${out_dir}/pca.eigenvec \
---pheno-name res_distensibility \
+--pheno-name $pheno_name \
 --covar-name PC1,PC2,PC3,PC4,PC5,PC6,PC7,PC8,PC9,PC10,PC11,PC12,PC13,PC14,PC15,PC16,PC17,PC18,PC19,PC20 \
 --glm hide-covar \
 --ci 0.95 \
