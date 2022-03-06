@@ -2,10 +2,10 @@
 
 #SBATCH --partition=brc,shared
 #SBATCH --job-name=gwas_snpfilt
-#SBATCH --time=04:00:00
+#SBATCH --time=02:00:00
 #SBATCH --mem=24G
 #SBATCH --ntasks=2
-#SBATCH --cpus-per-task=8
+#SBATCH --cpus-per-task=4
 #SBATCH --verbose
 #SBATCH --output=/scratch/users/k2142172/tests/array/gwas_snpfilt_%A_%a.out
 #SBATCH --array=[1-22]%6
