@@ -8,7 +8,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --verbose
 #SBATCH --output=/scratch/users/k2142172/tests/array/gwas_pca_%A_%a.out
-#SBATCH --array=1-2
+#SBATCH --array=[1-22]%6
 
 
 # script exits if return value of a command is not zero
@@ -27,6 +27,7 @@ mkdir -p $out_dir
 
 echo $SLURM_ARRAY_TASK_ID
 i=$SLURM_ARRAY_TASK_ID
-ls -alht ${out_dir}/snpfilt_chr${i}*
+ls -alht ${out_dir}/pruned_chr${i}*
 
-plink2 --pfile ${out_dir}/snpfilt_chr${i} --memory 40000 --threads 2 --pca --out ${out_dir}/pca_chr${i}
+plink2 --pfile ${out_dir}/pruned_chr${i} --memory 40000 --threads 2 \
+--pca 20 --out ${out_dir}/pca_chr${i}
