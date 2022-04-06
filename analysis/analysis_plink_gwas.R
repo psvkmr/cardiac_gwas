@@ -1,23 +1,28 @@
 library(tidyverse)
 
 #https://github.com/GP2-TNC-WG/GP2-Bioinformatics-course/blob/master/Module_III.md
-plink.dir <- 'C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/plink/'
-plink.files <- lapply(list.files(pattern = '*.linear', 
+
+#plink.dir <- 'C:/Users/Prasanth/Documents/cardiac_gwas/min_run/plink/'
+plink.dir <- 'C:/Users/Prasanth/Documents/cardiac_gwas/dis_run/plink/'
+
+#plink.files <- lapply(list.files(pattern = 'gwas_geno.*.linear', 
+plink.files <- lapply(list.files(pattern = 'gwas_genotype.*.linear', 
                                  path = paste0(plink.dir, 'outputs'), 
                                  full.names = T), 
                       read.table, comment.char = "", header = T)
-plink.names <- lapply(plink.files, function(x) paste0('chr', x$V1[1], sep = ''))
+plink.names <- lapply(plink.files, function(x) paste0('chr', x$`X.CHROM`[1], sep = ''))
 names(plink.files) <- plink.names
 
 plink <- Reduce(rbind, plink.files)
 names(plink)[1] <- 'CHR'
-# write.csv(plink,
-#           'C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/plink_summary_statistics.csv',
-#           row.names = F, quote = F)
+write.table(plink, paste0(plink.dir, 'plink_summary_statistics.txt'),
+          row.names = F, quote = F, sep = '\t')
+R.utils::gzip(paste0(plink.dir, 'plink_summary_statistics.txt'), destname = paste0(plink.dir, 'plink_summary_statistics.txt.gz'), 
+              overwrite = F, remove = F)
 
 plink.sig <- filter(plink, P < 5E-8)
-# write.csv(plink.sig,
-#           "C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/plink_sig_summary_statistics.csv")
+write.table(plink.sig, paste0(plink.dir, 'plink_sig_summary_statistics.csv'),
+          row.names = F, quote = F, sep = '\t')
 
 plink.log10 <- plink %>%
   mutate(log10Praw = -1*log10(P)) %>%
@@ -56,8 +61,8 @@ plink.manhattan <-
   labs(x = "CHR", y = "-log10P") +
   theme(legend.position = "none") +
   geom_abline(intercept = -log10(5E-08), slope = 0, linetype = 2)
-# ggsave('C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/plink_manhattan.png', 
-#        plot = plink.manhattan, dpi = 400)
+ggsave(paste0(plink.dir, 'plink_manhattan.png'),
+       plot = plink.manhattan, dpi = 400)
 
 plink.qqplotter <- function(df) {
   df <- df[!is.na(df$P), ]
@@ -76,10 +81,9 @@ plink.qqplt <- plink.qqplotter(plink)
 
 plink.chisq <- qchisq(1-plink$P, 1)
 plink.lambda <- median(plink.chisq) / qchisq(0.5,1)
-#write.table(plink.lambda, "C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/plink_lambda_value.txt")
+write.table(plink.lambda, paste0(plink.dir, 'plink_lambda_value.txt'))
 
 plink.alt.chisq <- qnorm(plink$P/2)
 plink.alt.lambda <- median(plink.alt.chisq^2, na.rm=T)/qchisq(0.5,df=1)
 
-n.samples <- 34214
-plink.lambda1000 <- 1 + (plink.lambda - 1) * (1/n.samples) * 500
+plink.qqplt

@@ -1,17 +1,13 @@
-# fuma analysis 
-
 library(tidyverse)
 library(ggrepel)
 
-#############################################################################
 # read in fuma and magma files 
-
-fuma.dir <- 'C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/saige/fuma'
+fuma.dir <- 'C:/Users/Prasanth/Documents/cardiac_gwas/dis_run/saige/fuma/'
 fuma.files <- list.files(fuma.dir, pattern = '*.txt')
 magma.files <- list.files(fuma.dir, pattern = '*.out')
 
 readFuma <- function(file){
-  readr::read_table(paste0(fuma.dir, '/', file), comment = '#')
+  readr::read_delim(paste0(fuma.dir, file), comment = '#', delim = '\t')
 }
 
 fuma <- lapply(fuma.files, readFuma)
@@ -28,7 +24,6 @@ magma.plotting <- magma$magma.genes.out %>%
   mutate(tot = cumsum(as.numeric(chr.len)) - chr.len) %>%
   dplyr::select(-chr.len) %>%
   left_join(magma$magma.genes.out, ., by = 'CHR') %>%
-  #  left_join(saige.log10, ., by = 'CHR') %>%
   arrange(ordered(CHR), START) %>%
   mutate(POScum = START+tot, 
          sig = ifelse(P < 0.05/nrow(magma$magma.genes.out), 'SIG', 'NOT_SIG'))
@@ -68,5 +63,10 @@ magma.qqplt <- magma.qqplotter(magma$magma.genes.out)
 
 magma.chisq <- qchisq(1-magma$magma.genes.out$P, 1)
 magma.lambda <- median(magma.chisq) / qchisq(0.5,1)
-# write.table(magma.lambda, paste0(fuma.dir, '/magma_lambda_value.tab'), 
-#             row.names = F, col.names = F, quote = F)
+#write.table(magma.lambda, paste0(fuma.dir, '/magma_lambda_value.txt'))
+
+
+#####################################################################################
+# gwas catalogue comparisons
+
+View(fuma$gwascatalog.txt)

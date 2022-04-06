@@ -1,3 +1,4 @@
+library(tidyverse)
 library(PCAtools)
 
 # plink v saige pvalues
@@ -45,40 +46,41 @@ extract.saige.dosages <- saige.sig[, c('CHR', 'POS')]
 #            quote = F, sep = '\t', col.names = F, row.names = F)
 # use bcftools on rosalind to extract from dosage vcf files
 
-saige.sig.dosages.chr7 <- read.table('C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/extracted_saige_sig_dosages_chr7.tab', 
+# load vcf results
+saige.sig.dosages.chr7 <- read.table('C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/saige/af/extracted_saige_sig_dosages_chr7.tab', 
                                      comment.char = '', header = F)
-vcf.samples <- read.table('C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/vcf_sample_names.txt')
-vcf.headers <- c('CHROM', 'POS', 'ID', 'REF', 'ALT', 'QUAL', vcf.samples)
+# load vcf sample names separately
+vcf.samples <- read.table('C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/processing/vcf_sample_names.txt')
+# create vcf headers from standard columns, plus loaded sample names
+vcf.headers <- c('CHROM', 'POS', 'ID', 'REF', 'ALT', 'QUAL', vcf.samples$V1)
 names(saige.sig.dosages.chr7) <- vcf.headers
 
+# convert vcf to matrix of dosages, and transform with samples rows and snps columns
 saige.sig.dos.7.mat <- dplyr::select(saige.sig.dosages.chr7, -c('CHROM', 'POS', 'REF', 'ALT', 'QUAL')) %>% 
-  column_to_rownames('ID')
-
-rownames(saige.sig.dos.7.mat) <- gsub('^X.*_', '', rownames(saige.sig.dos.7.mat))
-saige.sig.dos.7.mat <- saige.sig.dos.7.mat %>% as.data.frame() %>% rownames_to_column('ID')
+  column_to_rownames('ID') %>% t()
+mat.samples <- rownames(saige.sig.dos.7.mat)
+mat.samples <- gsub('^.*_', '', mat.samples)
+rownames(saige.sig.dos.7.mat) <- mat.samples
 
 ########################################################################################
 # check genotype to dist, pc1 correlations
 
+# load phenotype data for chromosome
 pheno.7 <- pheno.files$chr7
 pheno.7$FID <- as.character(pheno.7$FID)
-saige.sig.dos.res.7 <- left_join(pheno.7, saige.sig.dos.7.mat, by = c('FID' = 'ID'))
-saige.sig.dos.res.7 <- na.omit(saige.sig.dos.res.7)
 
-# cor(saige.sig.dos.res.7$PC1, saige.sig.dos.res.7$rs35361607)
-# cor(saige.sig.dos.res.7$PC2, saige.sig.dos.res.7$rs35361607)
-# cor(saige.sig.dos.res.7$res_distensibility, saige.sig.dos.res.7$rs35361607)
-# cor(saige.sig.dos.res.7$PC1, saige.sig.dos.res.7$res_distensibility)
+# convert matrix back to dataframe and merge with phenotype data
+saige.sig.dos.res.7 <- as.data.frame(saige.sig.dos.7.mat) %>% rownames_to_column('ID')
+saige.sig.dos.res.7 <- left_join(pheno.7, saige.sig.dos.res.7, by = c('FID' = 'ID'))
+# write.table(saige.sig.dos.res.7, 'C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/saige/af/samples_by_snps_chr7_dosage_matrix_w_phenotype.tab', 
+#             row.names = F, quote = F, sep = '\t')
 
-saige.sig.dos.res.7$dos.total <- rowSums(saige.sig.dos.res.7[, c(14:ncol(saige.sig.dos.res.7))])
-
-cor(saige.sig.dos.res.7$PC1, saige.sig.dos.res.7$dos.total)
-cor(saige.sig.dos.res.7$PC2, saige.sig.dos.res.7$dos.total)
-cor(saige.sig.dos.res.7$res_distensibility, saige.sig.dos.res.7$dos.total)
-cor(saige.sig.dos.res.7$PC1, saige.sig.dos.res.7$res_distensibility)
-cor(saige.sig.dos.res.7$PC2, saige.sig.dos.res.7$res_distensibility)
-
-plot(saige.sig.dos.res.7$res_distensibility, saige.sig.dos.res.7$dos.total)
+# compare dosage values of individual snps vs phenotype value across samples
+# differences should follow the signed beta value in sumstats
+# example of damaging snp
+saige.sig.dos.res.7 %>% group_by(as.factor(rs2071307)) %>% summarise(mean(res_distensibility))
+# example of protective snp 
+saige.sig.dos.res.7 %>% group_by(as.factor(rs10224499)) %>% summarise(mean(res_distensibility))
 
 ######################################################################
 # pca outliers
@@ -128,25 +130,6 @@ final.pcas <- lapply(final.pcas, function(x) `names<-`(x, c('#FID', 'IID', paste
 #               row.names = F, quote = F, sep = '\t')
 # }
 
-
-###############################################################################
-
-#saige vep 
-
-saige.vep <- read.table('C:/Users/Prasanth/Documents/cardiac_gwas/clean_gwas/saige/vep_output_saige_sig.txt', 
-                        comment.char = '', header = T)
-
-saige.vep.sub <- saige.vep[, c('X.Uploaded_variation', 'Allele', 'Consequence', 
-                               'IMPACT', 'SYMBOL', 'Gene', 'BIOTYPE', 'AF', 'AFR_AF', 
-                               'AMR_AF', 'EAS_AF', 'EUR_AF', 'SAS_AF')]
-saige.vep.sub <- unique.data.frame(saige.vep.sub)
-
-saige.vep.sub <- merge(saige.sig, saige.vep.sub, by.x = 'SNPID', by.y = 'X.Uploaded_variation')
-af.comparison <- saige.vep.sub[, c('SNPID', 'Allele1', 'Allele2', 'AF_Allele2', 
-                                   'Allele', 'AF', 'AMR_AF', 'EUR_AF')]
-af.correlation.scatter <- plot(af.comparison$AF_Allele2, af.comparison$EUR_AF)
-#plot(af.comparison$AF_Allele2, af.comparison$AMR_AF)
-#table(saige.vep.sub$SYMBOL)
 
 #####################################################################################
 # mitchell
