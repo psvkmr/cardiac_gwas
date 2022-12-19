@@ -1,13 +1,13 @@
 #!/bin/bash -l
 
 #SBATCH --partition=brc,shared
-#SBATCH --job-name=saige_prep
+#SBATCH --job-name=mprep
 #SBATCH --time=04:00:00
 #SBATCH --mem=24G
 #SBATCH --ntasks=2
 #SBATCH --cpus-per-task=8
 #SBATCH --verbose
-#SBATCH --output=/scratch/users/k2142172/tests/array/saige_prep_%A_%a.out
+#SBATCH --output=/scratch/users/k2142172/tests/min/saige_prep_%A_%a.out
 #SBATCH --array=[1-22]%6
 
 # load plink2
@@ -15,7 +15,7 @@ module load apps/plink2/2.0.0a2
 
 # set variable paths for files
 base_dir=/scratch/users/k2142172
-out_dir=${base_dir}/outputs/cardiac_gwas/gwas_run
+out_dir=${base_dir}/outputs/cardiac_gwas/min_run
 env=${base_dir}/packages/anaconda3/envs/RSAIGE
 
 # set variable paths for tools
@@ -30,15 +30,11 @@ echo $SLURM_ARRAY_TASK_ID
 i=$SLURM_ARRAY_TASK_ID
 ls -alht ${out_dir}/sample_filt_chr${i}*
 
-
-# assign first ID column of final fam file as new .sample file for SAIGE input
-awk '{print $1}' ${out_dir}/sample_filt_chr${i}.fam > ${out_dir}/sample_filt_chr${i}.sample
-wait
-
-# submit R script which merges phenotype with PCA PC values as one phenotype file
+# run once
 if [ $i == 1 ]
 then
-Rscript ${base_dir}/scripts/guys_projects/cardiac_gwas/make_pheno.R $1
+awk '{print $1}' ${out_dir}/sample_filt_chr${i}.fam > ${out_dir}/sample_filt.sample
+Rscript ${base_dir}/scripts/guys_projects/cardiac_gwas/min/make_pheno.R
 fi
 wait
 
@@ -48,3 +44,4 @@ $bcftools annotate -x FORMAT/GT ${out_dir}/sample_filt_chr${i}.vcf.gz -O z -o ${
 wait
 $bcftools index ${out_dir}/sample_filt_ds_chr${i}.vcf.gz
 
+#sbatch prep_saige.sh /scratch/users/k2142172/outputs/cardiac_gwas/sample_ids/min_aortic_area_phenotype.txt /scratch/users/k2142172/outputs/cardiac_gwas/min_run/pca.eigenvec

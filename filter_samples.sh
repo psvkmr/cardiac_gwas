@@ -1,13 +1,13 @@
 #!/bin/bash
 
 #SBATCH --partition=brc,shared
-#SBATCH --job-name=gwas_samplefilt
+#SBATCH --job-name=min_samplefilt
 #SBATCH --time=02:00:00
 #SBATCH --mem=24G
 #SBATCH --ntasks=2
 #SBATCH --cpus-per-task=8
 #SBATCH --verbose
-#SBATCH --output=/scratch/users/k2142172/tests/array/gwas_samplefilt_%A_%a.out
+#SBATCH --output=/scratch/users/k2142172/tests/min/gwas_samplefilt_%A_%a.out
 #SBATCH --array=[1-22]%6
 
 
@@ -23,7 +23,7 @@ module load apps/plink2/2.0.0a2
 
 remove_samples=$1
 
-out_dir=/scratch/users/k2142172/outputs/cardiac_gwas/gwas_run
+out_dir=/scratch/users/k2142172/outputs/cardiac_gwas/min_run
 
 mkdir -p $out_dir
 

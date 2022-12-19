@@ -1,14 +1,17 @@
-library(dplyr)
+#args=commandArgs(trailingOnly=T)
 
-args=commandArgs(trailingOnly=T)
+out.dir <- '/scratch/users/k2142172/outputs/cardiac_gwas/min_run/'
 
-out_dir <- '/scratch/users/k2142172/outputs/cardiac_gwas/gwas_run/'
+# add sqc file?
+#f <- read.table(args[1], header=T)
+#p <- read.table(args[2], header=T, comment.char='')
 
-f <- read.table(args[1], header=T, fill=T)
-p <- read.table(paste0(out_dir, 'pca.eigenvec', sep = ''), header=F)
+f <- '/scratch/users/k2142172/outputs/cardiac_gwas/sample_ids/min_aortic_area_phenotype.txt'
+p <- paste0(out.dir, '/genotype_pca.eigenvec')
 
-names(p) <- c('FID', 'IID', paste0(rep('PC'), seq(1, 20), sep = ''))
-df <- left_join(p, f, by = c('FID', 'IID'))
+f <- read.table(f, header = T)
+p <- read.table(p, header = T, comment.char = '')
 
-write.table(df, paste0(out_dir, 'pheno_file.pheno', sep = ''), row.names = F, quote = F, sep = '\t')
+df <- merge(f, p, by.x = c('FID', 'IID'), by.y = c('X.FID', 'IID'))
 
+write.table(df, paste0(out.dir, 'pca_pheno.pheno', sep = ''), row.names = F, quote = F, sep = '\t')

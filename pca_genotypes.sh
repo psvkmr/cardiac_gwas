@@ -1,13 +1,13 @@
 #!/bin/bash
 
 #SBATCH --partition=brc,shared
-#SBATCH --job-name=geno_pca
+#SBATCH --job-name=min_geno_pca
 #SBATCH --time=4:00:00
 #SBATCH --mem=40G
 #SBATCH --ntasks=4
 #SBATCH --cpus-per-task=8
 #SBATCH --verbose
-#SBATCH --output=/scratch/users/k2142172/tests/array/geno_pca.out
+#SBATCH --output=/scratch/users/k2142172/tests/min/geno_pca.out
 
 
 # script exits if return value of a command is not zero
@@ -20,7 +20,7 @@ set -v
 #Load Plink module
 module load apps/plink2/2.0.0a2
 
-out_dir=/scratch/users/k2142172/outputs/cardiac_gwas/gwas_run
+out_dir=/scratch/users/k2142172/outputs/cardiac_gwas/min_run
 
 mkdir -p $out_dir
 

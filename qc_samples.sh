@@ -1,13 +1,13 @@
 #!/bin/bash -l
 
 #SBATCH --partition=brc,shared
-#SBATCH --job-name=gwas_qcsample
+#SBATCH --job-name=min_qcsample
 #SBATCH --time=02:00:00
 #SBATCH --mem=24G
 #SBATCH --ntasks=2
 #SBATCH --cpus-per-task=8
 #SBATCH --verbose
-#SBATCH --output=/scratch/users/k2142172/tests/array/gwas_qcsample_%A_%a.out
+#SBATCH --output=/scratch/users/k2142172/tests/min/gwas_qcsample_%A_%a.out
 #SBATCH --array=[1-22]%6
 
 
@@ -21,7 +21,7 @@ set -v
 #Load Plink module
 module load apps/plink2/2.0.0a2
 plink2=/scratch/users/k2142172/packages/plink2
-out_dir=/scratch/users/k2142172/outputs/cardiac_gwas/gwas_run
+out_dir=/scratch/users/k2142172/outputs/cardiac_gwas/min_run
 
 echo $SLURM_ARRAY_TASK_ID
 i=$SLURM_ARRAY_TASK_ID

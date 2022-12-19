@@ -1,13 +1,13 @@
 #!/bin/bash
 
 #SBATCH --partition=brc,shared
-#SBATCH --job-name=mplink
+#SBATCH --job-name=mgplink
 #SBATCH --time=02:00:00
 #SBATCH --mem=24G
 #SBATCH --ntasks=2
 #SBATCH --cpus-per-task=8
 #SBATCH --verbose
-#SBATCH --output=/scratch/users/k2142172/tests/min/gwas_plink_%A_%a.out
+#SBATCH --output=/scratch/users/k2142172/tests/min/gwas_geno_plink_%A_%a.out
 #SBATCH --array=1-22
 
 
@@ -39,9 +39,9 @@ plink2 --pfile ${out_dir}/sample_filt_chr${i} \
 --memory 24000 \
 --threads 2 \
 --pheno $pheno_file \
---covar ${out_dir}/pca.eigenvec \
+--covar ${out_dir}/genotype_pca.eigenvec \
 --pheno-name $pheno_name \
 --covar-name PC1,PC2,PC3,PC4,PC5,PC6,PC7,PC8,PC9,PC10,PC11,PC12,PC13,PC14,PC15,PC16,PC17,PC18,PC19,PC20 \
 --glm hide-covar \
 --ci 0.95 \
---out ${out_dir}/gwas_results_chr${i}
+--out ${out_dir}/gwas_genotype_results_chr${i}

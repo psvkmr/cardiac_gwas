@@ -1,7 +1,6 @@
 # sample QC
 
-#gwas.dir <- 'C:/Users/Prasanth/Documents/cardiac_gwas/min_aorta_gwas'
-gwas.dir <- 'C:/Users/Prasanth/Documents/cardiac_gwas/dis_run'
+gwas.dir <- 'C:/Users/Prasanth/Documents/cardiac_gwas/min_aorta_gwas'
 
 # plink-calculated inbreeding coefficient and expected vs observed heterozygosity rates
 het.files <- lapply(X = list.files(pattern = '*.het$',
@@ -98,7 +97,7 @@ names(sample.miss.df) <- c('X.FID', 'IID')
 het.or.smiss.outliers.df <- unique.data.frame(rbind(het.outliers.df, sample.miss.df))
 
 # now need to remove withdrawn participants
-withdrawn.consent <- read.csv('C:/Users/Prasanth/Documents/cardiac_gwas/sample_data/participants_withdrawn.csv', header = F)
+withdrawn.consent <- read.csv('C:/Users/Prasanth/Documents/cardiac_gwas/participants_withdrawn.csv', header = F)
 withdrawn.consent.samples <- het.files$chr1_het.het[het.files$chr1_het.het$IID %in% withdrawn.consent$V1, 'IID']
 withdrawn.consent.samples.df <- data.frame('X.FID' = withdrawn.consent.samples, 
                                            'IID' = withdrawn.consent.samples)
@@ -106,7 +105,7 @@ withdrawn.consent.samples.df <- data.frame('X.FID' = withdrawn.consent.samples,
 het.smiss.withdrawn.df <- unique(data.frame(rbind(het.or.smiss.outliers.df, withdrawn.consent.samples.df)))
 
 # final outliers write out file
-# write.table(het.outliers.df, paste0(gwas.dir, '/processing/het_outlier_samples.txt'), row.names = F, col.names = F, sep = '\t', quote = F)
-# write.table(sample.miss.df, paste0(gwas.dir, '/processing/excess_missing_samples.txt'), row.names = F, col.names = F, sep = '\t', quote = F)
-# write.table(withdrawn.consent.samples.df, paste0(gwas.dir, '/processing/participant_withdrawn_samples.txt'), row.names = F, col.names = F, sep = '\t', quote = F)
-# write.table(het.smiss.withdrawn.df, paste0(gwas.dir, '/processing/het_smiss_withdrawn.txt'), row.names = F, col.names = F, sep = '\t', quote = F)
+ # write.table(het.outliers.df, paste0(gwas.dir, '/processing/het_outlier_samples.txt'), row.names = F, col.names = F, sep = '\t', quote = F)
+ # write.table(sample.miss.df, paste0(gwas.dir, '/processing/excess_missing_samples.txt'), row.names = F, col.names = F, sep = '\t', quote = F)
+ # write.table(withdrawn.consent.samples.df, paste0(gwas.dir, '/processing/participant_withdrawn_samples.txt'), row.names = F, col.names = F, sep = '\t', quote = F)
+ # write.table(het.smiss.withdrawn.df, paste0(gwas.dir, '/processing/het_smiss_withdrawn.txt'), row.names = F, col.names = F, sep = '\t', quote = F)

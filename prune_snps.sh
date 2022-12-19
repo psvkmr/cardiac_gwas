@@ -1,11 +1,11 @@
 #!/bin/bash
 
 #SBATCH --partition=brc,shared
-#SBATCH --job-name=gwas_prune
+#SBATCH --job-name=min_prune
 #SBATCH --time=02:00:00
 #SBATCH --mem=16G
 #SBATCH --verbose
-#SBATCH --output=/scratch/users/k2142172/tests/array/gwas_prune_%A_%a.out
+#SBATCH --output=/scratch/users/k2142172/tests/min/gwas_prune_%A_%a.out
 #SBATCH --array=[1-22]%6
 
 
@@ -20,7 +20,7 @@ set -v
 #Newer versions throw error about IDs
 module load apps/plink2/2.0.0a2
 
-out_dir=/scratch/users/k2142172/outputs/cardiac_gwas/gwas_run
+out_dir=/scratch/users/k2142172/outputs/cardiac_gwas/min_run
 resources=/scratch/users/k2142172/resources
 
 mkdir -p $out_dir

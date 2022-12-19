@@ -1,13 +1,13 @@
 #!/bin/bash
 
 #SBATCH --partition=brc,shared
-#SBATCH --job-name=gwas_reformat
+#SBATCH --job-name=min_reformat
 #SBATCH --time=04:00:00
 #SBATCH --mem=40G
 #SBATCH --ntasks=2
 #SBATCH --cpus-per-task=8
 #SBATCH --verbose
-#SBATCH --output=/scratch/users/k2142172/tests/array/gwas_reformat_%A_%a.out
+#SBATCH --output=/scratch/users/k2142172/tests/min/gwas_reformat_%A_%a.out
 #SBATCH --array=[1-22]%4
 
 
@@ -21,7 +21,7 @@ set -v
 #Load Plink module
 module load apps/plink2/2.0.0a2
 
-out_dir=/scratch/users/k2142172/outputs/cardiac_gwas/gwas_run
+out_dir=/scratch/users/k2142172/outputs/cardiac_gwas/min_run
 bgzip=/scratch/users/k2142172/packages/anaconda3/envs/peddy/bin/bgzip
 bcftools=/scratch/users/k2142172/packages/bcftools-1.14/bcftools
 

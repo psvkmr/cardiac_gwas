@@ -1,11 +1,11 @@
 #!/bin/bash
 
 #SBATCH --partition=brc,shared
-#SBATCH --job-name=gwas_merge
+#SBATCH --job-name=mmerge
 #SBATCH --time=00:30:00
 #SBATCH --mem=5G
 #SBATCH --verbose
-#SBATCH --output=/scratch/users/k2142172/tests/array/merge.out
+#SBATCH --output=/scratch/users/k2142172/tests/min/merge.out
 
 
 # script exits if return value of a command is not zero
@@ -19,7 +19,7 @@ set -v
 #module load apps/plink2/2.0.0a2
 
 plink2=/scratch/users/k2142172/packages/plink2
-out_dir=/scratch/users/k2142172/outputs/cardiac_gwas/gwas_run
+out_dir=/scratch/users/k2142172/outputs/cardiac_gwas/min_run
 
 mkdir -p $out_dir
 

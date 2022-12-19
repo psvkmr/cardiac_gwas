@@ -1,0 +1,19 @@
+PLINK v2.00a2LM 64-bit Intel (6 Oct 2019)
+Options in effect:
+  --extract /scratch/users/k2142172/resources/rsIDs_In_HRC_Or_Genotyped.txt  
+  --geno 0.05
+  --hwe 1e-6
+  --maf 0.01
+  --memory 24000
+  --pfile /scratch/users/k2142172/outputs/cardiac_gwas/min_run/bgen_filt_chr1
+  --snps-only
+  --threads 2
+
+Hostname: nodeb20.pri.rosalind2.alces.network
+Working directory: /mnt/lustre/users/k2142172/scripts/guys_projects/cardiac_gwas/min
+Start time: Wed Mar  9 16:23:29 2022
+
+Warning: No output requested.  (Did you forget --make-bed/--make-{b}pgen?)
+Exiting.
+
+End time: Wed Mar  9 16:23:29 2022
